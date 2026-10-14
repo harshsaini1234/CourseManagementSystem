@@ -1,5 +1,9 @@
 package com.course.managementsystem.Services;
 
+import com.course.managementsystem.Course_DTO.CourseRequestDTO;
+import com.course.managementsystem.Course_DTO.CourseResponseDTO;
+import com.course.managementsystem.Course_DTO.CourseResponseDTOTraditional;
+import com.course.managementsystem.Exception.CourseNotFoundException;
 import com.course.managementsystem.Moddels.Course;
 import com.course.managementsystem.Repository.CourseRepository;
 import org.springframework.stereotype.Service;
@@ -11,50 +15,95 @@ public class CourseServices {
     private final CourseRepository courseRepository;
 
     public CourseServices(CourseRepository courseRepository) {
+
         this.courseRepository = courseRepository;
     }
 
-    public Course createCourse(Course course) {
-        return courseRepository.save(course);
+    public CourseResponseDTO createCourse(CourseRequestDTO courseRequestDTO) {
+        Course course = mapToEntity(courseRequestDTO);
+        Course savedCourse = courseRepository.save(course);
+        return mapToResponseDTO(savedCourse);
+
     }
 
 
-    public Course getCourseById(long id) {
-        return courseRepository.findById(id).get();
+
+
+
+    public CourseResponseDTO getCourseById(long id) {
+        Course course = courseRepository.findById(id).orElseThrow(()->new
+                CourseNotFoundException("Course not found with ID :"+id));
+        return mapToResponseDTO(course);
+
     }
 
-    public List<Course> getAllCourses() {
-        return courseRepository.findAll();
+
+
+    public List<CourseResponseDTO> getAllCourses() {
+
+        return courseRepository.findAll()
+                .stream()
+                .map(this::mapToResponseDTO)
+                .toList();
     }
 
-    public Course updateCoursePartially(Long id, Course updatedCourse) {
-       Course existingCourse = courseRepository.findById(id).get();
+    public CourseResponseDTO updateCoursePartially(Long id, CourseRequestDTO updatedCourse) {
+       Course existingCourse = findCourseOrThrow(id);
 
-       if (updatedCourse.getName()!=null){
-           existingCourse.setName(updatedCourse.getName());
+       if (updatedCourse.name()!=null){
+           existingCourse.setName(updatedCourse.name());
        }
-        if (updatedCourse.getDescription()!=null){
-            existingCourse.setDescription(updatedCourse.getDescription());
+        if (updatedCourse.description()!=null){
+            existingCourse.setDescription(updatedCourse.description());
         }
-        if (updatedCourse.getPrice()!=null){
-            existingCourse.setPrice(updatedCourse.getPrice());
+        if (updatedCourse.price()!=null){
+            existingCourse.setPrice(updatedCourse.price());
         }
-        return courseRepository.save(existingCourse);
+        Course savedCourse = courseRepository.save(existingCourse);
+        return mapToResponseDTO(savedCourse);
 
 
     }
 
-    public Course updateCourseCompletely(Long id, Course updatedCourse) {
-        Course exitingCourse = courseRepository.findById(id).get();
+    public CourseResponseDTO updateCourseCompletely(Long id, CourseRequestDTO updatedCourse) {
+        Course exitingCourse = findCourseOrThrow(id);
 
-        exitingCourse.setName(updatedCourse.getName());
-        exitingCourse.setDescription(updatedCourse.getDescription());
-        exitingCourse.setPrice(updatedCourse.getPrice());
-        return courseRepository.save(exitingCourse);
+        exitingCourse.setName(updatedCourse.name());
+        exitingCourse.setDescription(updatedCourse.description());
+        exitingCourse.setPrice(updatedCourse.price());
+
+        Course savedCourse = courseRepository.save(exitingCourse);
+        return mapToResponseDTO(savedCourse);
     }
 
     public String deleteCourse(Long id) {
-         courseRepository.deleteById(id);
+        Course exitingCourse = findCourseOrThrow(id);
+         courseRepository.delete(exitingCourse);
+         
          return "Course is deleted successfully";
+    }
+
+    private Course findCourseOrThrow(Long id) {
+        return courseRepository.findById(id)
+                .orElseThrow(() -> new CourseNotFoundException(
+                        "Course not found with id: " + id
+                ));
+    }
+
+    private Course mapToEntity(CourseRequestDTO dto){
+        Course course = new Course();
+        course.setName(dto.name());
+        course.setDescription(dto.description());
+        course.setPrice(dto.price());
+        return course;
+
+    }
+    private CourseResponseDTO mapToResponseDTO(Course course) {
+        return new CourseResponseDTO(
+                course.getId(),
+                course.getName(),
+                course.getDescription(),
+                course.getPrice()
+        );
     }
 }

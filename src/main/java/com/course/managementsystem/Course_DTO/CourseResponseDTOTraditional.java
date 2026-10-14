@@ -1,11 +1,11 @@
 package com.course.managementsystem.Course_DTO;
 
-public class CourseRequestDTOTraditional {
+public class CourseResponseDTOTraditional {
     private String name;
     private String description;
     private Integer price;
 
-    public CourseRequestDTOTraditional(String name, String description, Integer price) {
+    public CourseResponseDTOTraditional(String name, String description, Integer price) {
         this.name = name;
         this.description = description;
         this.price = price;
