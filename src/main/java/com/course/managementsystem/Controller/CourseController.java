@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/course")
+@RequestMapping("/courses")
 public class CourseController {
 
     private final CourseServices courseServices;
@@ -21,37 +21,37 @@ public class CourseController {
         this.courseServices = courseServices;
     }
 
-    @PostMapping("/add")
+    @PostMapping
      public ResponseEntity<CourseResponseDTO> createCourse( @Valid  @RequestBody CourseRequestDTO course){
         CourseResponseDTO courseCreated = courseServices.createCourse(course);
       return ResponseEntity.status(HttpStatus.CREATED)
               .body(courseCreated);
 
      }
-     @GetMapping("/getCourse/{id}")
+     @GetMapping("/{id}")
     public ResponseEntity<CourseResponseDTO> getCourseById(@PathVariable long id){
 
         CourseResponseDTO course = courseServices.getCourseById(id);
        return ResponseEntity.ok(course);
      }
 
-     @GetMapping("/getAllCourses")
+     @GetMapping
     public ResponseEntity<List<CourseResponseDTO>> getAllCourse(){
         return ResponseEntity.ok(courseServices.getAllCourses());
      }
 
-     @PatchMapping("/partialUpdate/{id}")
+     @PatchMapping("{id}")
      public ResponseEntity<CourseResponseDTO> updateCoursePartially(@PathVariable Long id, @RequestBody CourseRequestDTO course){
         return ResponseEntity.ok(courseServices.updateCoursePartially(id,course));
 
      }
 
-     @PutMapping("/fullUpdate/{id}")
+     @PutMapping("{id}")
     public ResponseEntity<CourseResponseDTO> updateCourseCompletely(@PathVariable Long id,@RequestBody CourseRequestDTO course){
         return ResponseEntity.ok(courseServices.updateCourseCompletely(id,course));
      }
 
-     @DeleteMapping("/deleteCourse/{id}")
+     @DeleteMapping("{id}")
     public ResponseEntity<Void> deletecourse(@PathVariable Long id ) {
          courseServices.deleteCourse(id);
          return ResponseEntity.noContent().build() ;

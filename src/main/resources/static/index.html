@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Course Management System</h1>
+    <p class="subtitle">Simple UI connected with Spring Boot REST APIs</p>
+
+    <div id="messageBox" class="message"></div>
+
+    <div class="card">
+        <h2 id="formTitle">Add New Course</h2>
+
+        <form id="courseForm">
+            <input type="hidden" id="courseId">
+
+            <div class="form-group">
+                <label for="name">Course Name</label>
+                <input type="text" id="name" placeholder="Enter course name">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" placeholder="Enter course description"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price</label>
+                <input type="number" id="price" placeholder="Enter price">
+            </div>
+
+            <div class="button-group">
+                <button type="submit" id="submitBtn">Add Course</button>
+                <button type="button" class="secondary-btn" onclick="resetForm()">Clear</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Course List</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Course Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+
+            <tbody id="courseTableBody">
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
